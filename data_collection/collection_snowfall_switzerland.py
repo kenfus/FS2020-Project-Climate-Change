@@ -64,7 +64,7 @@ def get_and_transform_data(sheets=['Neuschnee']):
         # Save Data
         # data_sliced.to_excel(path_to_data + sheet + '_' + str(first_year) + '-' + str(last_year) + '.xlsx')
         list_dfs.append(data_sliced)
-    if len(sheets)==1:
+    if len(sheets) == 1:
         return data_sliced
     else:
         return dict(zip(sheets, list_dfs))
