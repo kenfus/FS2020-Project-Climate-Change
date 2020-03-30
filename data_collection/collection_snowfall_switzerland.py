@@ -70,8 +70,7 @@ def get_and_transform_data(sheets=['Neuschnee']):
             data_sliced = data_sliced.replace('...', np.nan)
 
             # Save Data
-            # data_sliced.to_excel(path_to_data + sheet + '_' + str(first_year) + '-' + str(last_year) + '.xlsx'
-
+            data_sliced.to_excel(path_to_data)
         else:
             data_sliced = pd.read_excel(path_to_data)
 
