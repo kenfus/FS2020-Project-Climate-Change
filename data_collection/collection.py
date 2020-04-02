@@ -153,4 +153,5 @@ def get_swiss_data(sheets=None):
 
 
 if __name__ == '__main__':
-    get_swiss_data()
+    pass
+
