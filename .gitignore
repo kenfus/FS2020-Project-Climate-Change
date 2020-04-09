@@ -58,6 +58,10 @@ coverage.xml
 *.mo
 *.pot
 
+# Data types
+*.csv
+*.xlsx
+
 # Django stuff:
 *.log
 local_settings.py
