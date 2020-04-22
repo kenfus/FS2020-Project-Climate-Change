@@ -11,7 +11,7 @@ import requests
 from os import path
 
 import pandas as pd
-from data_wrangling import _transform_swiss_data
+from data_wrangling import transform_swiss_data
 
 
 def collect_global_temp():
@@ -121,7 +121,7 @@ def get_swiss_data(sheets=None):
     url = 'https://www.bfs.admin.ch/bfsstatic/dam/assets/12047383/master'
     path_to_folder = ''
     data_name = 'klimadaten_swiss_open_data.xlsx'
-    order_of_columns = ['Year', 'Country', 'Region', 'Area']
+    order_of_columns = ['Year', 'Country', 'Region']
 
     ### Get Data with help of cliget
     # Set Sesion and get Cookie
@@ -149,9 +149,9 @@ def get_swiss_data(sheets=None):
 
     xlsx = pd.ExcelFile(path_to_data)
 
-    return _transform_swiss_data(xlsx, first_year, last_year, sheets, order_of_columns, path_to_folder)
+    return transform_swiss_data(xlsx, first_year, last_year, sheets, order_of_columns, path_to_folder)
 
 
 if __name__ == '__main__':
-    pass
+    get_swiss_data()
 

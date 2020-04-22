@@ -4,7 +4,7 @@ import numpy as np
 import pandas as pd
 
 
-def _transform_swiss_data(xlsx, first_year, last_year, sheets, order_of_columns, path_to_folder):
+def transform_swiss_data(xlsx, first_year, last_year, sheets, order_of_columns, path_to_folder):
     if sheets is None:
         sheets = ['Neuschnee']
 
@@ -38,11 +38,10 @@ def _transform_swiss_data(xlsx, first_year, last_year, sheets, order_of_columns,
             data_sliced = data_sliced.replace('...', np.nan)
 
             # Add country and region
-            data_sliced['Country'] = 'Switzerland'
-            data_sliced['Region'] = 'Europe'
+            data_sliced['Country'] = 'switzerland'
 
             # Melt by Year, Country, Region and add Area
-            data_melted = data_sliced.melt(['Country', 'Region', 'Year'], var_name='Area', value_name=sheet)
+            data_melted = data_sliced.melt(['country', 'year'], var_name='region', value_name=sheet)
 
             # Sort dataframe
             order_of_columns.append(sheet)
