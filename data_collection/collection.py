@@ -179,6 +179,7 @@ def get_swiss_data(sheets=None):
     }
 
     # Check if path exist and load it from there
+    dir_path = path.dirname(path.abspath(inspect.getfile(inspect.currentframe())))
     path_to_data = dir_path + data_name
 
     if not path.exists(path_to_data):
@@ -193,5 +194,5 @@ def get_swiss_data(sheets=None):
 
 
 if __name__ == '__main__':
-    pass
+    get_swiss_data()
 

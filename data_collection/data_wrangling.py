@@ -5,8 +5,7 @@ import json, inspect
 
 
 
-def transform_swiss_data(xlsx, first_year, last_year, sheets, order_of_columns, path_to_folder):
-
+def transform_swiss_data(xlsx, first_year, last_year, sheets, order_of_columns):
 
     if sheets is None:
         sheets = ['Neuschnee']
@@ -43,10 +42,10 @@ def transform_swiss_data(xlsx, first_year, last_year, sheets, order_of_columns, 
             data_sliced = data_sliced.replace('...', np.nan)
 
             # Add country and region
-            data_sliced['Country'] = 'switzerland'
+            data_sliced['Country'] = 'Switzerland'
 
             # Melt by Year, Country, Region and add Area
-            data_melted = data_sliced.melt(['country', 'year'], var_name='region', value_name=sheet)
+            data_melted = data_sliced.melt(['Country', 'Year'], var_name='Region', value_name=sheet)
 
             # Sort dataframe
             order_of_columns.append(sheet)
@@ -151,7 +150,6 @@ def transform_global_temp(df_dict):
     return df_temp
     
     
-    
-    
-    
-    
+
+
+
