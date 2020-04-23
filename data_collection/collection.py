@@ -11,6 +11,7 @@ from os import path
 import pandas as pd
 from data_collection.data_wrangling import transform_swiss_data, transform_global_co2, transform_global_temp
 
+
 def collect_global_temp():
     """
     Collects the global temperature of each country from 'http://berkeleyearth.lbl.gov/country-list/'
@@ -25,7 +26,7 @@ def collect_global_temp():
         df = _collect_region_temp(countries[country]['url'])
         if isinstance(df, pd.DataFrame):
             dfs[country] = df
-    
+
     return transform_global_temp(dfs)
 
 
@@ -46,8 +47,10 @@ def _collect_region_temp(country):
     try:
         response = requests.get(url1 + country + url2)
         if response.status_code == 200:
-            content = response.content.decode('latin1') #utf-8 does not work due to some special characters
-            content = re.split(r'% Year, Month,  Anomaly, Unc.,   Anomaly, Unc.,   Anomaly, Unc.,   Anomaly, Unc.,   Anomaly, Unc.\n \n  ', content)[1]
+            content = response.content.decode('latin1')  # utf-8 does not work due to some special characters
+            content = re.split(
+                r'% Year, Month,  Anomaly, Unc.,   Anomaly, Unc.,   Anomaly, Unc.,   Anomaly, Unc.,   Anomaly, Unc.\n \n  ',
+                content)[1]
             rows = re.split(r'\n  ', content)
             data = [re.split(r'\s+', row) for row in rows]
             data[-1] = data[-1][:-1]  # last row contains an empty 13. value
@@ -60,6 +63,7 @@ def _collect_region_temp(country):
     except Exception as e:
         print(e, '\noccured in : _collect_region_temp ', country)
     return df
+
 
 def collect_global_co2():
     """
@@ -94,7 +98,7 @@ def collect_global_co2():
             print('status_code in collect_global_co2: ', response.status_code)
     except Exception as e:
         print(e, '\noccured in collect_global_co2')
-        
+
     return transform_global_co2(df_co2)
 
 
@@ -144,8 +148,7 @@ def get_swiss_data(sheets=None):
     return transform_swiss_data(xlsx, first_year, last_year, sheets, order_of_columns, path_to_folder)
 
 
-
-def get_swiss_data(sheets=None):
+def get_swiss_data(sheets=None, safe_data=False):
     """
     This function goes to "https://www.bfs.admin.ch/bfsstatic/dam/assets/12047383/master" and
     downloads the latest Version of swiss-climate data. This Data gets updated every year and contains the
@@ -161,7 +164,7 @@ def get_swiss_data(sheets=None):
     path_to_folder = ''
     data_name = 'klimadaten_swiss_open_data.xlsx'
 
-    order_of_columns = ['Year', 'Country', 'Region', 'Area']
+    order_of_columns = ['Year', 'Country', 'Region']
 
     ### Get Data with help of cliget
     # Set Sesion and get Cookie
@@ -195,4 +198,3 @@ def get_swiss_data(sheets=None):
 
 if __name__ == '__main__':
     get_swiss_data()
-
