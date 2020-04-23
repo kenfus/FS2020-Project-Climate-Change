@@ -161,7 +161,6 @@ def get_swiss_data(sheets=None, safe_data=False):
     first_year = 1931
     last_year = 2019
     url = 'https://www.bfs.admin.ch/bfsstatic/dam/assets/12047383/master'
-    path_to_folder = ''
     data_name = 'klimadaten_swiss_open_data.xlsx'
 
     order_of_columns = ['Year', 'Country', 'Region']
