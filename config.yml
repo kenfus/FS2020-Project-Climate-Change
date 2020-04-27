@@ -1,5 +1,6 @@
 sql:
-    host: 127.0.0.1
-    user: root
-    pw: my_pw
-    db: my_db
+    host: '86.119.42.47'
+    user: 'db_user'
+    pw: 'db_password'
+    db: 'climate_change_db'
+    port: '5432'
