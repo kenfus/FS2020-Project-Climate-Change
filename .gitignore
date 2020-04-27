@@ -2,6 +2,7 @@
 __pycache__/
 *.py[cod]
 *$py.class
+*.yml
 
 # C extensions
 *.so
@@ -137,3 +138,5 @@ dmypy.json
 
 # Ignore IDE specific information
 .idea
+# Ignore os specific files
+.DS_Store
