@@ -2,12 +2,11 @@
 """
 Created on Thu Mar 26 17:58:54 2020
 
-@author: Lukas
+@author: Lukas and vincenzo
 """
 
 import re, requests, json, io, inspect
 from os import path
-
 import pandas as pd
 from data_collection.data_wrangling import transform_swiss_data, transform_global_co2, transform_global_temp
 
@@ -98,7 +97,7 @@ def collect_global_co2():
     return transform_global_co2(df_co2)
 
 
-def get_swiss_data(sheets=None):
+def get_swiss_data(sheets_to_collect=None):
     """
     This function goes to "https://www.bfs.admin.ch/bfsstatic/dam/assets/12047383/master" and
     downloads the latest version of swiss-climate data. This data gets updated every year and contains the
@@ -111,10 +110,10 @@ def get_swiss_data(sheets=None):
     first_year = 1931
     last_year = 2019
     url = 'https://www.bfs.admin.ch/bfsstatic/dam/assets/12047383/master'
-    path_to_folder = ''
-    data_name = 'klimadaten_swiss_open_data.xlsx'
     order_of_columns = ['Year', 'Country', 'Region']
-
+    # Sheet-Managment:
+    if sheets_to_collect is None:
+        sheets_to_collect = ['Neuschnee']
     ### Get Data with help of cliget
     # Set Sesion and get Cookie
     session = requests.Session()
@@ -130,69 +129,16 @@ def get_swiss_data(sheets=None):
         'User-Agent': 'Mozilla/5.0 (X11; Linux x86_64; rv:74.0) Gecko/20100101 Firefox/74.0',
     }
 
-    # Check if path exist and load it from there
-    path_to_data = path_to_folder + data_name
-
-    if not path.exists(path_to_data):
-        url_data = requests.get(url, headers=headers, cookies=cookies)
-        output = open(path_to_folder + data_name, 'wb')
-        output.write(url_data.content)
-        output.close()
-
-    xlsx = pd.ExcelFile(path_to_data)
-
-    return transform_swiss_data(xlsx, first_year, last_year, sheets, order_of_columns, path_to_folder)
-
-
-
-def get_swiss_data(sheets=None):
-    """
-    This function goes to "https://www.bfs.admin.ch/bfsstatic/dam/assets/12047383/master" and
-    downloads the latest Version of swiss-climate data. This Data gets updated every year and contains the
-    average yearly values of following climate-attributes: Temperature, Snowfall, Sunhours and Rain.
-    In the function you can give either one or more of those attributes as list. If it's empty,
-    it gives back the snowfall. This function also transforms the data into a melted form with
-    Country, Region, Area and Year as an unique identifier.
-    """
-    ### Patameters
-    first_year = 1931
-    last_year = 2019
-    url = 'https://www.bfs.admin.ch/bfsstatic/dam/assets/12047383/master'
-    path_to_folder = ''
-    data_name = 'klimadaten_swiss_open_data.xlsx'
-
-    order_of_columns = ['Year', 'Country', 'Region', 'Area']
-
-    ### Get Data with help of cliget
-    # Set Sesion and get Cookie
-    session = requests.Session()
-    session.get(url)
-    cookies = session.cookies.get_dict()
-
-    # Generated Headers by cliegt
-    headers = {
-        'Host': 'www.bfs.admin.ch',
-        'Accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,*/*;q=0.8',
-        'Accept-Language': 'en-US,en;q=0.5',
-        'Upgrade-Insecure-Requests': '1',
-        'User-Agent': 'Mozilla/5.0 (X11; Linux x86_64; rv:74.0) Gecko/20100101 Firefox/74.0',
-    }
-
-    # Check if path exist and load it from there
-    dir_path = path.dirname(path.abspath(inspect.getfile(inspect.currentframe())))
-    path_to_data = dir_path + data_name
-
-    if not path.exists(path_to_data):
-        url_data = requests.get(url, headers=headers, cookies=cookies)
-        output = open(dir_path + data_name, 'wb')
-        output.write(url_data.content)
-        output.close()
-
-    xlsx = pd.ExcelFile(path_to_data)
-
-    return transform_swiss_data(xlsx, first_year, last_year, sheets, order_of_columns)
+    response = requests.get(url, headers=headers, cookies=cookies)
+    list_of_sheets = []
+    for sheet in sheets_to_collect:
+        with io.BytesIO(response.content) as fh:
+            xlsx = pd.io.excel.read_excel(fh, sheet)
+        list_of_sheets.append(xlsx)
+        print(xlsx.head)
+    return transform_swiss_data(list_of_sheets, sheets_to_collect, order_of_columns, first_year, last_year)
 
 
 if __name__ == '__main__':
-    get_swiss_data()
+    pass
 
