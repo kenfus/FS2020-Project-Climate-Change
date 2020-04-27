@@ -145,7 +145,7 @@ def get_swiss_data(sheets_to_collect=None):
         with io.BytesIO(response.content) as fh:
             xlsx = pd.io.excel.read_excel(fh, sheet)
         list_of_sheets.append(xlsx)
-        print(xlsx.head)
+
     return transform_swiss_data(list_of_sheets, sheets_to_collect, order_of_columns, first_year, last_year)
 
 
