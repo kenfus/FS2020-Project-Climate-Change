@@ -5,10 +5,17 @@ Created on Thu Mar 26 17:58:54 2020
 @author: Lukas and vincenzo
 """
 
-import re, requests, json, io, inspect
+import inspect
+import io
+import json
+import re
 from os import path
+
 import pandas as pd
+import requests
+
 from data_collection.data_wrangling import transform_swiss_data, transform_global_co2, transform_global_temp
+
 
 def collect_global_temp():
     """
@@ -24,7 +31,7 @@ def collect_global_temp():
         df = _collect_region_temp(countries[country]['url'])
         if isinstance(df, pd.DataFrame):
             dfs[country] = df
-    
+
     return transform_global_temp(dfs)
 
 
@@ -45,8 +52,10 @@ def _collect_region_temp(country):
     try:
         response = requests.get(url1 + country + url2)
         if response.status_code == 200:
-            content = response.content.decode('latin1') #utf-8 does not work due to some special characters
-            content = re.split(r'% Year, Month,  Anomaly, Unc.,   Anomaly, Unc.,   Anomaly, Unc.,   Anomaly, Unc.,   Anomaly, Unc.\n \n  ', content)[1]
+            content = response.content.decode('latin1')  # utf-8 does not work due to some special characters
+            content = re.split(
+                r'% Year, Month,  Anomaly, Unc.,   Anomaly, Unc.,   Anomaly, Unc.,   Anomaly, Unc.,   Anomaly, Unc.\n \n  ',
+                content)[1]
             rows = re.split(r'\n  ', content)
             data = [re.split(r'\s+', row) for row in rows]
             data[-1] = data[-1][:-1]  # last row contains an empty 13. value
@@ -59,6 +68,7 @@ def _collect_region_temp(country):
     except Exception as e:
         print(e, '\noccured in : _collect_region_temp ', country)
     return df
+
 
 def collect_global_co2():
     """
@@ -93,7 +103,7 @@ def collect_global_co2():
             print('status_code in collect_global_co2: ', response.status_code)
     except Exception as e:
         print(e, '\noccured in collect_global_co2')
-        
+
     return transform_global_co2(df_co2)
 
 
@@ -141,4 +151,3 @@ def get_swiss_data(sheets_to_collect=None):
 
 if __name__ == '__main__':
     pass
-
