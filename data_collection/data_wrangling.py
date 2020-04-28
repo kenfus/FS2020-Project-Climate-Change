@@ -31,12 +31,17 @@ def transform_swiss_data(list_of_sheets, sheets_to_collect, order_of_columns, fi
 
         # Add country and region
         data_sliced['Country'] = 'Switzerland'
-
+        data_sliced['alpha_3'] = 'CHE'
         # Melt by Year, Country, Region and add Area
-        data_melted = data_sliced.melt(['Country', 'Year'], var_name='Region', value_name=sheet)
-
+        data_melted = data_sliced.melt(['Country', 'Year', 'alpha_3'], var_name='Region', value_name=sheet)
+        # Clean the names
+        df = pd.read_csv('switzerland_long_lat_renaming.csv')
+        data_melted = data_melted.replace(dict(zip(df['Region'], df['Region_cleaned'])))
+        # Add Latitude and Longitude
+        long_lat_df = df[['Latitude', 'Longitude', 'Region_cleaned']]
+        data_melted = data_melted.merge(long_lat_df, left_on='Region', right_on='Region_cleaned')
         # Sort dataframe
-        colums_sheet = order_of_columns.append(sheet)
+        colums_sheet = order_of_columns + [sheet]
         data_melted = data_melted.reindex(columns=colums_sheet)
         list_dfs.append(data_melted)
 
