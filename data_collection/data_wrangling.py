@@ -1,9 +1,8 @@
 import inspect
 import json
-from os import path
-
 import numpy as np
 import pandas as pd
+from os import path
 
 
 def transform_swiss_data(list_of_sheets, sheets_to_collect, order_of_columns, first_year, last_year, ):
