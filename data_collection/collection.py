@@ -151,4 +151,4 @@ def get_swiss_data(sheets_to_collect=None):
 
 
 if __name__ == '__main__':
-    get_swiss_data().to_csv('lul.csv')
+    pass
