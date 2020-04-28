@@ -62,7 +62,7 @@ coverage.xml
 # Data types
 *.csv
 *.xlsx
-
+!switzerland_long_lat_renaming.csv
 # Django stuff:
 *.log
 local_settings.py
