@@ -1,67 +1,49 @@
+import inspect
+import json
 from os import path
+
 import numpy as np
 import pandas as pd
-import json, inspect
 
 
-
-def transform_swiss_data(xlsx, first_year, last_year, sheets, order_of_columns):
-
-    if sheets is None:
-        sheets = ['Neuschnee']
-        
-    dir_path = path.dirname(path.abspath(inspect.getfile(inspect.currentframe())))
-
+def transform_swiss_data(list_of_sheets, sheets_to_collect, order_of_columns, first_year, last_year, ):
     ### Transform data:
 
     list_dfs = []
 
-    for sheet in sheets:
-        path_to_data = dir_path + '/' + sheet + '_' + str(first_year) + '-' + str(last_year) + '.csv'
+    for sheet, data in zip(sheets_to_collect, list_of_sheets):
+        # Get city names (first row with Säntis in it) and set this as colum-names
+        r, c = np.where(data == 'Säntis')
+        r = np.min(r)
+        data.columns = data.iloc[r]
 
-        # Check if file doesn't already exist:
-        if not path.exists(path_to_data):
-            # Read data from web-grabber
-            data = pd.read_excel(xlsx, sheet)
+        # Slice dataframe between to years
+        first_row = np.where(data.iloc[:, 0] == first_year)[0][0]
+        last_row = np.where(data.iloc[:, 0] == last_year)[0][0]
+        data_sliced = data[(data.index >= first_row) & (data.index <= last_row)]
 
-            # Get city names (first row with Säntis in it) and set this as colum-names
-            r, c = np.where(data == 'Säntis')
-            r = np.min(r)
-            data.columns = data.iloc[r]
+        # Set column with years as index
+        data_sliced.columns = data_sliced.columns.fillna('Year')
+        data_sliced.set_index('Year', inplace=True, drop=False)
 
-            # Slice dataframe between to years
-            first_row = np.where(data.iloc[:, 0] == first_year)[0][0]
-            last_row = np.where(data.iloc[:, 0] == last_year)[0][0]
-            data_sliced = data[(data.index >= first_row) & (data.index <= last_row)]
+        # Replace "..." by np.nan
+        data_sliced = data_sliced.replace('...', np.nan)
 
-            # Set column with years as index
-            data_sliced.columns = data_sliced.columns.fillna('Year')
-            data_sliced.set_index('Year', inplace=True, drop=False)
+        # Add country and region
+        data_sliced['Country'] = 'Switzerland'
 
-            # Replace "..." by np.nan
-            data_sliced = data_sliced.replace('...', np.nan)
+        # Melt by Year, Country, Region and add Area
+        data_melted = data_sliced.melt(['Country', 'Year'], var_name='Region', value_name=sheet)
 
-            # Add country and region
-            data_sliced['Country'] = 'Switzerland'
-
-            # Melt by Year, Country, Region and add Area
-            data_melted = data_sliced.melt(['Country', 'Year'], var_name='Region', value_name=sheet)
-
-            # Sort dataframe
-            order_of_columns.append(sheet)
-            data_melted = data_melted.reindex(columns=order_of_columns)
-
-            # Save Data
-            data_melted.to_csv(path_to_data, index=False)
-        else:
-            data_melted = pd.read_csv(path_to_data)
-
+        # Sort dataframe
+        colums_sheet = order_of_columns.append(sheet)
+        data_melted = data_melted.reindex(columns=colums_sheet)
         list_dfs.append(data_melted)
 
-    if len(sheets) == 1:
+    if len(sheets_to_collect) == 1:
         return data_melted
     else:
-        return dict(zip(sheets, list_dfs))
+        return dict(zip(sheets_to_collect, list_dfs))
 
 
 def transform_global_co2(df_co2):
@@ -80,8 +62,9 @@ def transform_global_co2(df_co2):
     countries_json = json.load(open(dir_path + '/countries.json', 'r'))
 
     # rename of impropper names
-    rename = {'Occupied Palestinian Territory':'Palestina', 'Republic of South Sudan':'Sudan', 'Russian Federation':'Russia'}
-    df_co2 = df_co2.rename(columns = rename)
+    rename = {'Occupied Palestinian Territory': 'Palestina', 'Republic of South Sudan': 'Sudan',
+              'Russian Federation': 'Russia'}
+    df_co2 = df_co2.rename(columns=rename)
 
     # slice only selected countries
     countries = list(countries_json.keys())
@@ -90,7 +73,7 @@ def transform_global_co2(df_co2):
     # rename for db storage
     db_names = [country['db_name'] for country in countries_json.values()]
     rename = dict(zip(countries, db_names))
-    df_co2 = df_co2.rename(columns = rename)
+    df_co2 = df_co2.rename(columns=rename)
 
     # add year-00 to column year
     df_co2 = df_co2.astype({'year': 'str'})
@@ -98,10 +81,10 @@ def transform_global_co2(df_co2):
     df_co2 = df_co2.astype({'year': 'datetime64'})
 
     # bring co2 to db-compatible format
-    df_co2 = df_co2.melt(id_vars = ['year'], var_name = 'country', value_name = 'co2')
-    
+    df_co2 = df_co2.melt(id_vars=['year'], var_name='country', value_name='co2')
+
     return df_co2
-    
+
 
 def _transform_country_temp(df, country, columns):
     """
@@ -117,17 +100,18 @@ def _transform_country_temp(df, country, columns):
     :returns: transformed pd.DataFrame with the selected columns
     """
     # creates yyyy-mm
-    month_replace = {'month':{'1':'01', '2':'02', '3':'03', '4':'04', '5':'05', '6':'06', '7':'07', '8':'08', '9':'09',}}
+    month_replace = {
+        'month': {'1': '01', '2': '02', '3': '03', '4': '04', '5': '05', '6': '06', '7': '07', '8': '08', '9': '09', }}
     df = df.replace(month_replace)
     df.loc[:, 'year'] = df.loc[:, 'year'] + '-' + df.loc[:, 'month'] + '-01'
-    df = df.rename(columns = {'year':'date'})
+    df = df.rename(columns={'year': 'date'})
 
     # add country to df and reorder columns
     df['country'] = country
     cols = df.columns.tolist()
     cols = [cols[0]] + [cols[-1]] + cols[1:-1]
     df = df.loc[:, cols]
-    
+
     return df.loc[:, columns]
 
 
@@ -139,17 +123,12 @@ def transform_global_temp(df_dict):
     
     :returns: pd.DataFrame with columns: 'date', 'country', 'monthly_anomaly', 'monthly_unc.'
     """
-    columns = ['date', 'country', 'monthly_anomaly'] #add(, 'monthly_unc.') if desired
-    df_temp = pd.DataFrame(columns = columns)
+    columns = ['date', 'country', 'monthly_anomaly']  # add(, 'monthly_unc.') if desired
+    df_temp = pd.DataFrame(columns=columns)
     for country, df in zip(df_dict.keys(), df_dict.values()):
         df = _transform_country_temp(df, country, columns)
         df_temp = df_temp.append(df)
-        
-    df_temp = df_temp.astype({'date':'datetime64'})
-    
+
+    df_temp = df_temp.astype({'date': 'datetime64'})
+
     return df_temp
-    
-    
-
-
-
