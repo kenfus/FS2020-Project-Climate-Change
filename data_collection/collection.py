@@ -8,10 +8,11 @@ Created on Thu Mar 26 17:58:54 2020
 import inspect
 import io
 import json
-import pandas as pd
 import re
-import requests
 from os import path
+
+import pandas as pd
+import requests
 
 from data_collection.data_wrangling import transform_swiss_data, transform_global_co2, transform_global_temp
 
@@ -123,7 +124,7 @@ def get_swiss_data(sheets_to_collect=None):
     order_of_columns = ['Year', 'Country', 'alpha_3', 'Region', 'Latitude', 'Longitude']
     # Sheet-Managment:
     if sheets_to_collect is None:
-        sheets_to_collect = ['Neuschnee']
+        sheets_to_collect = ['Neuschnee', 'Jahresniederschlag', 'Jahrestemperatur', 'Sonnenscheindauer']
     ### Get Data with help of cliget
     # Set Sesion and get Cookie
     session = requests.Session()
