@@ -8,11 +8,10 @@ Created on Thu Mar 26 17:58:54 2020
 import inspect
 import io
 import json
-import re
-from os import path
-
 import pandas as pd
+import re
 import requests
+from os import path
 
 from data_collection.data_wrangling import transform_swiss_data, transform_global_co2, transform_global_temp
 
