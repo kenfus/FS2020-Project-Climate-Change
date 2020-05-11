@@ -20,7 +20,7 @@ from data_collection.data_wrangling import transform_swiss_data, transform_globa
 def collect_global_temp():
     """
     Collects the global temperature of each country from 'http://berkeleyearth.lbl.gov/country-list/'
-    
+
     :returns: - dict where the key is each country and the value is the according stored pandas dataframe
     """
     # gets the correct path even if the script is called from outside
@@ -38,12 +38,12 @@ def collect_global_temp():
 def _collect_region_temp(country):
     """
     Collects the global temperature of the country `country` from 'http://berkeleyearth.lbl.gov/country-list/'
-    
+
     It contains an extracted regional summary of land-surface temperature results produced
     by the Berkeley Earth averaging method for the region until 2013
-    
+
     Input: the country value from ./countries.json
-    
+
     :returns: - pandas dataframe, if the download was successful
              - None otherwise
     """
@@ -73,9 +73,9 @@ def _collect_region_temp(country):
 def collect_global_co2():
     """
     Collects the global co_2 of each country from http://emissions2019.globalcarbonatlas.org
-    
+
     It contains regional co_2 data in MtCO_2 from 1960 until 2018
-    
+
     :returns: - pd.DataFrame, if the download was successful
               - None otherwise
     """
