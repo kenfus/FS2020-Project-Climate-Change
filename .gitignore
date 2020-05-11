@@ -1,3 +1,48 @@
 
+.vs/ProjectSettings.json
+.vs/slnx.sqlite
+.vs/VSWorkspaceState.json
+.vs/mhoch3/v15/.suo
+data
+*.csv
+*.zip
+*.ipynb
+*.yml
+
+__pycache__
+
+# Folder view configuration files
+.DS_Store
+Desktop.ini
+
+# Thumbnail cache files
+._*
+Thumbs.db
+
+# Files that might appear on external disks
+.Spotlight-V100
+.Trashes
+
+# Compiled Python files
+*.pyc
+
+# Compiled C++ files
+*.out
+
+# Application specific files
+venv
+node_modules
+.sass-cache
+.gitignore
+
+=======
+# miscellaneous
+.idea/
+__pycache__/
+data/
+virtual/
+/strat_developer/archive/fxcm_log
+.ipynb_checkpoints
+
 *.xml
 *.iml

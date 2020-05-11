@@ -21,9 +21,9 @@ def create_table_locations(connection):
     '''
     Creates the 'location' table:
 
-    | col_name  | location_id | latitude         | longitude        | region      | country     |
-    |-----------|-------------|------------------|------------------|-------------|-------------|
-    | data_type | smallserial | double precision | double precision | varchar(60) | varchar(60) |
+    | col_name  | location_id | latitude         | longitude        | region      | country     | alpha_3    |
+    |-----------|-------------|------------------|------------------|-------------|-------------|------------|
+    | data_type | smallserial | double precision | double precision | varchar(60) | varchar(60) | varchar(3) |
 
     Takes:
     - connection: psycopg2.connect object
@@ -112,7 +112,7 @@ def create_table_sensor_readings(connection):
                 '( CASE WHEN int_reading IS NULL THEN 0 ELSE 1 END'
                  '+ CASE WHEN float_reading IS NULL THEN 0 ELSE 1 END'
                  '+ CASE WHEN bool_reading IS NULL THEN 0 ELSE 1 END'
-                ') = 1'
+                ') <= 1'
             ')'
         ');'
     )

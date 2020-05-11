@@ -53,9 +53,9 @@ def transform_global_co2(df_co2):
     - renames true country names to chars A-Z|a-z
     - slices selected countries from `df_co2` based on 'data_collection/countries.json'
     - adds -00 to 'year' values
-    
+
     :param df_co2: pd.DataFrame global co2 data
-    
+
     :returns: pd.DataFrame where columns are: 'year', 'country', 'co2'
     """
     dir_path = path.dirname(path.abspath(inspect.getfile(inspect.currentframe())))
@@ -68,7 +68,8 @@ def transform_global_co2(df_co2):
 
     # slice only selected countries
     countries = list(countries_json.keys())
-    df_co2 = df_co2.loc[:, ['year', *countries]]
+    drop_countries = [country for country in df_co2.columns[1:] if country not in countries]
+    df_co2 = df_co2.drop(columns = drop_countries)
 
     # rename for db storage
     db_names = [country['db_name'] for country in countries_json.values()]
@@ -92,11 +93,11 @@ def _transform_country_temp(df, country, columns):
     - date from 'year' and 'month' as yyyy-mm
     - adds 'country' as the second column with values `country`
     - slices selected columns `columns`
-    
+
     :param df: pd.DataFrame to transform
     :param country: str name of the country
     :param columns: list of which columns to slice
-    
+
     :returns: transformed pd.DataFrame with the selected columns
     """
     # creates yyyy-mm
@@ -118,9 +119,9 @@ def _transform_country_temp(df, country, columns):
 def transform_global_temp(df_dict):
     """
     Transforms the global temperature of each country in df_dict
-    
+
     :param df_dict: dictionary with key(country) and value(pd.DataFrame)
-    
+
     :returns: pd.DataFrame with columns: 'date', 'country', 'monthly_anomaly', 'monthly_unc.'
     """
     columns = ['date', 'country', 'monthly_anomaly']  # add(, 'monthly_unc.') if desired
