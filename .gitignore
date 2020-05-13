@@ -74,6 +74,10 @@ node_modules
 .sass-cache
 .gitignore
 
+# Spyder project settings
+.spyderproject
+.spyproject
+
 =======
 # miscellaneous
 .idea/
@@ -88,5 +92,4 @@ virtual/
 *.csv
 
 *.zip
-*.ipynb
 *.yml
