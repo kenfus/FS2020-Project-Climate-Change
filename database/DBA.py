@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
-
 import sqlalchemy
+import pandas as pd
 
 
 class DBA(object):
@@ -59,3 +59,5 @@ class DBA(object):
         self.engine.dispose()
         self.engine = None
         DBA.pool = False
+
+
