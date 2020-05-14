@@ -14,7 +14,7 @@ from os import path
 import pandas as pd
 import requests
 
-from data_collection.data_wrangling import transform_swiss_data, transform_global_co2, transform_global_temp
+from data_wrangling import transform_swiss_data, transform_global_co2, transform_global_temp
 
 
 def collect_global_temp():
