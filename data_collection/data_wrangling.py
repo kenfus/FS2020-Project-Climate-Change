@@ -34,7 +34,18 @@ def transform_swiss_data(list_of_sheets, sheets_to_collect, order_of_columns, fi
         # Melt by Year, Country, Region and add Area
         data_melted = data_sliced.melt(['Country', 'Year', 'alpha_3'], var_name='Region', value_name=sheet)
         # Clean the names
-        df = pd.read_csv('switzerland_long_lat_renaming.csv')
+        rename_dict = {'Region': {0: 'Basel-Binningen', 1: 'Bern-Zollikofen 1)', 2: 'Davos WSL 2)', 3: 'Genf-Cointrin', 4: 'Locarno-Monti',
+                    5: 'Lugano', 6: 'Luzern', 7: 'Neuenburg', 8: 'Säntis', 9: 'Samedan', 10: 'Sitten', 11: 'St. Gallen',
+                    12: 'Zürich-Fluntern'},
+                    'Region_cleaned': {0: 'Basel-Binningen', 1: 'Bern-Zollikofen', 2: 'Davos', 3: 'Genf-Cointrin',
+                    4: 'Locarno-Monti', 5: 'Lugano', 6: 'Luzern', 7: 'Neuenburg', 8: 'Säntis', 9: 'Samedan', 10: 'Sitten', 11: 'St. Gallen',
+                    12: 'Zürich-Fluntern'},
+                    'Latitude': {0: 47.53796, 1: 46.99832, 2: 46.802746, 3: 46.22783, 4: 46.170978999999996,
+                    5: 46.003601, 6: 47.04554, 7: 48.84655, 8: 47.256459, 9: 46.438365000000005, 10: 46.2276, 11: 47.424479999999996,
+                    12: 47.382096999999995},
+                    'Longitude': {0: 7.571110000000001, 1: 7.45109, 2: 9.83597, 3: 6.10424, 4: 8.79112, 5:
+                    8.953619999999999, 6: 8.308010000000001, 7: 8.588410000000001, 8: 9.317421000000001, 9: 9.870266, 10: 7.3599429999999995, 11: 9.376717, 12: 8.566803}}
+        df = pd.DataFrame.from_dict(rename_dict)
         data_melted = data_melted.replace(dict(zip(df['Region'], df['Region_cleaned'])))
         # Add Latitude and Longitude
         long_lat_df = df[['Latitude', 'Longitude', 'Region_cleaned']]
