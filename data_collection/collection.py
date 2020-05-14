@@ -120,10 +120,11 @@ def get_swiss_data(sheets_to_collect=None):
     first_year = 1931
     last_year = 2019
     url = 'https://www.bfs.admin.ch/bfsstatic/dam/assets/12047383/master'
-    order_of_columns = ['Year', 'Country', 'Region']
+    # Set the order of columns here. You can also remove variables to remove them from the output
+    order_of_columns = ['Year', 'Country', 'alpha_3', 'Region', 'Latitude', 'Longitude']
     # Sheet-Managment:
     if sheets_to_collect is None:
-        sheets_to_collect = ['Neuschnee']
+        sheets_to_collect = ['Neuschnee', 'Jahresniederschlag', 'Jahrestemperatur', 'Sonnenscheindauer']
     ### Get Data with help of cliget
     # Set Sesion and get Cookie
     session = requests.Session()
@@ -144,6 +145,7 @@ def get_swiss_data(sheets_to_collect=None):
     for sheet in sheets_to_collect:
         with io.BytesIO(response.content) as fh:
             xlsx = pd.io.excel.read_excel(fh, sheet)
+
         list_of_sheets.append(xlsx)
 
     return transform_swiss_data(list_of_sheets, sheets_to_collect, order_of_columns, first_year, last_year)
