@@ -90,4 +90,5 @@ virtual/
 *.zip
 *.ipynb
 !EDA_Storytelling_Switzerland.ipynb
+!DataStory.ipynb
 *.yml
