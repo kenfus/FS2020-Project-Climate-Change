@@ -91,7 +91,7 @@ def transform_global_co2(df_co2):
     rename = dict(zip(countries, db_names))
     df_co2 = df_co2.rename(columns=rename)
 
-    # add year-00 to column year
+    # add year-01-01 to column year
     df_co2 = df_co2.astype({'year': 'str'})
     df_co2.loc[:, 'year'] = df_co2.loc[:, 'year'] + '-01-01'
     df_co2 = df_co2.astype({'year': 'datetime64'})
@@ -139,12 +139,19 @@ def transform_global_temp(df_dict):
 
     :returns: pd.DataFrame with columns: 'date', 'country', 'monthly_anomaly', 'monthly_unc.'
     """
+    dir_path = path.dirname(path.abspath(inspect.getfile(inspect.currentframe())))
+    countries_json = json.load(open(dir_path + '/countries.json', 'r'))
+    
     columns = ['date', 'country', 'monthly_anomaly']  # add(, 'monthly_unc.') if desired
-    df_temp = pd.DataFrame(columns=columns)
+    df_temp = pd.DataFrame(columns=columns)    
     for country, df in zip(df_dict.keys(), df_dict.values()):
         df = _transform_country_temp(df, country, columns)
         df_temp = df_temp.append(df)
 
     df_temp = df_temp.astype({'date': 'datetime64'})
-
+    
+    # rename for db storage
+    countries = list(countries_json.keys())
+    db_names = [country['db_name'] for country in countries_json.values()]
+    df_temp['country'] = df_temp['country'].replace(countries, db_names)
     return df_temp
