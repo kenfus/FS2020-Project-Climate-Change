@@ -90,3 +90,7 @@ virtual/
 *.ipynb
 !EDA_Storytelling_Switzerland.ipynb
 *.yml
+
+#TEMP
+testing.ipynb
+get_db_data.ipynb
