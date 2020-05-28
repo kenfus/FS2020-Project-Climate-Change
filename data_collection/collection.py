@@ -111,7 +111,7 @@ def get_swiss_data(sheets_to_collect=None):
     """
     This function goes to "https://www.bfs.admin.ch/bfsstatic/dam/assets/12047383/master" and
     downloads the latest version of swiss-climate data. This data gets updated every year and contains the
-    average yearly values of following climate-attributes: Temperature, Snowfall, Sunhours and Rain.
+    average yearly values of following climate-attributes: Temperature (degrees C), Snowfall (cm), Sunhours (h) and Precipitation (mm).
     In the function you can give either one or more of those attributes as list. If it's empty,
     it gives back the snowfall. This function also transforms the data into a melted form with
     Country, Region, Area and Year as an unique identifier.
