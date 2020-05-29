@@ -1,6 +1,10 @@
 
-.idea/inspectionProfiles/profiles_settings.xml
-.idea/inspectionProfiles/profiles_settings.xml
-.idea/misc.xml
 *.xml
-*.xml
+*.pyc
+*.csv
+storytelling/config.yml
+*.xlsx
+storytelling/.ipynb_checkpoints/st_switzerland-checkpoint.ipynb
+storytelling/.ipynb_checkpoints/EDA_Storytelling_Switzerland-checkpoint.ipynb
+storytelling/.ipynb_checkpoints/DataStory_Simon-checkpoint.ipynb
+storytelling/.ipynb_checkpoints/DataStory-checkpoint.ipynb
