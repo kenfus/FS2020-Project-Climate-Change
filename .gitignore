@@ -73,7 +73,6 @@ venv
 node_modules
 .sass-cache
 
-=======
 # miscellaneous
 .idea/
 __pycache__/
