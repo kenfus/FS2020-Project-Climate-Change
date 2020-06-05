@@ -3,7 +3,7 @@ from sqlalchemy import create_engine
 import yaml
 
 class DataAccess():
-    
+
     def __init__(self):
         credentials = yaml.load(open('../config.yml'), Loader=yaml.FullLoader)
 
@@ -14,13 +14,13 @@ class DataAccess():
         db_adress = credentials['sql']['host']
         db_port = credentials['sql']['port']
 
-        self.engine = create_engine('postgresql://{user}:{password}@{host}:{port}/{db}'.format(user = db_user, 
+        self.engine = create_engine('postgresql://{user}:{password}@{host}:{port}/{db}'.format(user = db_user,
                                                                                           password = db_user_pw,
-                                                                                          host = db_adress, 
-                                                                                          port = db_port, 
+                                                                                          host = db_adress,
+                                                                                          port = db_port,
                                                                                           db = db_name),
                                echo=False)
-        
+
     # Query swiss data
     def get_swiss_data_db(self):
         '''
@@ -126,7 +126,7 @@ class DataAccess():
         df_names = ['temperature', 'co2']
 
         return dict(zip(df_names, df_list))
-    
+
     def save_to_disk(self):
         swiss_data = self.get_swiss_data_db()
         global_data = self.get_global_data_db()
@@ -139,8 +139,8 @@ class DataAccess():
 
         global_data['temperature'].to_csv('global_temperature.csv', index = False)
         global_data['co2'].to_csv('global_co2.csv', index = False)
-        
+
 if __name__ == '__main__':
-    
+
     db = DataAccess()
     db.save_to_disk()

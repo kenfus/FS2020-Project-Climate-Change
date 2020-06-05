@@ -1,3 +1,6 @@
+import sys, json
+sys.path.insert(0, '../')
+
 import data_collection.collection as dc
 
 df_swiss = dc.get_swiss_data(sheets_to_collect = ['Sonnenscheindauer', 'Jahresniederschlag', 'Jahrestemperatur', 'Neuschnee'])
